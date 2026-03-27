@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnoHub - Single File HTML</title>
+  <style>
+    :root{
+      --bg:#e7e3dc;
+      --ink:#171717;
+      --panel:#ffffff;
+      --muted:#6d6d6d;
+      --line:#cfc7bc;
+      --accent:#111111;
+      --accent-2:#f4efe8;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    a{color:inherit}
+    button{font:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+    .topbar{
+      position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
+      background:rgba(231,227,220,.88);border-bottom:1px solid var(--line)
+    }
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+    .brand-badge{
+      width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:20px
+    }
+    .hero{padding:64px 0 34px;border-bottom:1px solid var(--line)}
+    .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+    h1{font-size:clamp(42px,8vw,92px);line-height:.92;letter-spacing:-.05em;text-transform:uppercase;margin:0 0 18px}
+    .lead{max-width:820px;font-size:18px;line-height:1.6;color:#333;margin:0 0 30px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      border:1px solid var(--ink);background:transparent;color:var(--ink);padding:12px 16px;border-radius:999px;
+      cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700
+    }
+    .btn.primary{background:var(--accent);color:#fff}
+    .specs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+    .spec{padding:24px 20px;border-right:1px solid var(--line)}
+    .spec:last-child{border-right:none}
+    .spec .label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+    .spec .value{font-size:28px;font-weight:800;letter-spacing:-.03em}
+    .section{padding:44px 0}
+    .toolbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-bottom:20px}
+    .title-xl{font-size:38px;line-height:1;letter-spacing:-.04em;text-transform:uppercase;margin:0 0 8px}
+    .subtle{color:var(--muted)}
+    .filters{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      border:1px solid var(--ink);background:transparent;border-radius:999px;padding:9px 14px;cursor:pointer;
+      font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase
+    }
+    .chip.active{background:var(--accent);color:#fff}
+    .searchbox{
+      width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:#fff;font-size:15px;box-shadow:var(--shadow)
+    }
+    .task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);
+      cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.12);border-color:#aba092}
+    .card-top{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:16px}
+    .icon{
+      width:52px;height:52px;border-radius:16px;background:var(--accent-2);display:grid;place-items:center;font-size:26px;border:1px solid var(--line)
+    }
+    .difficulty{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+    .card h3{margin:0 0 10px;font-size:24px;line-height:1.05;letter-spacing:-.03em}
+    .card p{margin:0 0 16px;line-height:1.6;color:#363636}
+    .card-art{height:150px;border-radius:18px;overflow:hidden;border:1px solid var(--line);margin:0 0 16px;background:linear-gradient(135deg,#f6f2eb,#e2dbcf)}
+    .card-art img{width:100%;height:100%;object-fit:cover;display:block}
+    .tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{font-size:11px;padding:6px 10px;border-radius:999px;background:var(--accent-2);border:1px solid var(--line);color:#333}
+    .detail{display:none}
+    .detail.active{display:block}
+    .detail-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .detail-grid{display:grid;grid-template-columns:1.45fr .95fr;gap:22px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+    .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+    .task-title{font-size:clamp(34px,5vw,62px);line-height:.95;letter-spacing:-.05em;text-transform:uppercase;margin:0 0 14px}
+    .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+    .pill{font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;background:var(--accent-2);border:1px solid var(--line)}
+    .hero-image{
+      border-radius:20px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,#f6f2eb,#e2dbcf);
+      min-height:260px;display:grid;place-items:center;text-align:center;padding:20px
+    }
+    .hero-image img{max-width:100%;height:auto;display:block}
+    .placeholder-art{font-size:70px;opacity:.9;margin-bottom:10px}
+    .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .list{margin:0;padding-left:18px}
+    .list li{margin:7px 0;line-height:1.5}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px 12px;border-bottom:1px solid #ece7df;text-align:left;vertical-align:top}
+    .table th{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    pre{
+      margin:0;background:#111;color:#f5f2ec;padding:18px;border-radius:18px;overflow:auto;
+      font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace
+    }
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .features{background:#111;color:#f6f2eb}
+    .features-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}
+    .feature-list{display:grid;gap:18px}
+    .feature{display:grid;grid-template-columns:42px 1fr;gap:14px}
+    .feature .bubble{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);display:grid;place-items:center}
+    footer{padding:28px 0 60px;color:var(--muted)}
+    .hidden{display:none !important}
+    .muted{color:var(--muted)}
+    .empty{padding:34px;border:1px dashed var(--line);border-radius:22px;text-align:center;color:var(--muted);background:rgba(255,255,255,.6)}
+    @media (max-width: 1000px){
+      .task-grid,.detail-grid,.features-grid,.cols-2,.specs{grid-template-columns:1fr 1fr}
+      .spec:nth-child(2){border-right:none}
+    }
+    @media (max-width: 720px){
+      .toolbar,.task-grid,.detail-grid,.features-grid,.cols-2,.specs{grid-template-columns:1fr}
+      .spec{border-right:none;border-bottom:1px solid var(--line)}
+      .spec:last-child{border-bottom:none}
+      .topbar .inner{padding:12px 0}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container inner">
+      <div class="brand">
+        <div class="brand-badge">⚙️</div>
+        <div>UnoHub</div>
+      </div>
+      <div class="subtle">Single-file HTML version</div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="eyebrow">Arduino Uno task hub</div>
+      <h1>Master the hardware</h1>
+      <p class="lead">
+        A standalone HTML remake of the uploaded project. It keeps the Arduino Uno task catalog in one file,
+        with filterable task cards, AI-style task visuals, project detail pages, pin mappings, component lists, and copyable code blocks.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#tasks">Explore tasks</a>
+        <button class="btn" id="openFirstFeatured">Open featured project</button>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <main class="container">
+    <section class="section" id="tasks">
+      <div id="catalogView">
+        <div class="toolbar">
+          <div>
+            <h2 class="title-xl">Core tasks</h2>
+            <div class="subtle">Filter by difficulty and search by title, tag, or description.</div>
+          </div>
+          <div class="filters" id="filters"></div>
+        </div>
+        <div style="margin-bottom:18px">
+          <input id="searchInput" class="searchbox" type="search" placeholder="Search tasks, tags, components, or use cases…" />
+        </div>
+        <div id="taskGrid" class="task-grid"></div>
+        <div id="emptyState" class="empty hidden">No tasks matched your filters.</div>
+      </div>
+
+      <div id="detailView" class="detail"></div>
+    </section>
+  </main>
+
+  <section class="section features">
+    <div class="container features-grid">
+      <div>
+        <div class="eyebrow" style="color:rgba(255,255,255,.55)">Why Arduino Uno</div>
+        <h2 class="title-xl" style="color:#fff;margin-bottom:18px">Built for reliability</h2>
+        <div class="feature-list">
+          <div class="feature">
+            <div class="bubble">⏱️</div>
+            <div>
+              <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px">Real-time execution</div>
+              <div class="muted" style="color:rgba(255,255,255,.65)">Deterministic timing for control loops and sensor sampling.</div>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="bubble">💻</div>
+            <div>
+              <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px">C++ foundation</div>
+              <div class="muted" style="color:rgba(255,255,255,.65)">A familiar path from beginner sketches to larger embedded systems.</div>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="bubble">🧩</div>
+            <div>
+              <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px">Shield ecosystem</div>
+              <div class="muted" style="color:rgba(255,255,255,.65)">Easy expansion with sensors, displays, motors, and connectivity modules.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="background:rgba(255,255,255,.04);color:#fff;border-color:rgba(255,255,255,.12)">
+        <div class="kicker" style="color:rgba(255,255,255,.55)">System snapshot</div>
+        <pre style="background:rgba(0,0,0,.35);color:#fff">SYSTEM_STATUS: NOMINAL
+UPTIME: 99.9%
+CORE_TEMP: 32°C
+CLOCK: 16 MHz
+FLASH: 32 KB
+SRAM: 2 KB</pre>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <div>Made from the uploaded React/Vite project as a single standalone HTML file.</div>
+  </footer>
+
+  <script>
+    const tasks = [
+      {
+        id: 'smart-agriculture',
+        icon: '🌱',
+        title: 'Smart Agriculture Monitoring System',
+        difficulty: 'Advanced',
+        description: 'A comprehensive environmental monitoring system for agriculture, tracking soil moisture, light, water levels, and air quality.',
+        tags: ['Agriculture','Monitoring','Sensors','Safety'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: [
+            'Monitor Temperature & Humidity (DHT22)',
+            'Track Soil Moisture levels',
+            'Measure Light Intensity (LDR)',
+            'Monitor Water Tank Level (Ultrasonic)',
+            'Detect Gas/Air Quality (MQ-2)',
+            'Display status on LCD',
+            'Alert using LEDs and Buzzer'
+          ],
+          realLifeUse: ['Smart agriculture','Greenhouse monitoring','Automatic irrigation systems','Farm environmental monitoring','Food production monitoring'],
+          components: ['Arduino Uno','DHT22 (Temp + Hum)','Soil Moisture Sensor (or Potentiometer)','LDR (Photoresistor)','HC-SR04 Ultrasonic Sensor','MQ-2 Gas Sensor','LCD 16x2 I2C','Buzzer','LEDs (Green, Yellow, Red)','Resistors','Breadboard'],
+          pins: [
+            ['DHT22 DATA','D2'],['Soil Sensor AO','A2'],['LDR AO','A0'],['MQ-2 AO','A1'],['Ultrasonic TRIG','D4'],['Ultrasonic ECHO','D5'],
+            ['Green LED','D6'],['Yellow LED','D7'],['Red LED','D8'],['Buzzer','D9'],['LCD SDA','A4'],['LCD SCL','A5']
+          ],
+          howItWorks: [
+            ['Soil Monitoring','Detects if soil is dry and needs water.'],
+            ['Environmental Tracking','Monitors temperature and light levels for optimal crop growth.'],
+            ['Resource Management','Tracks water tank levels to ensure supply.'],
+            ['Safety Alerts','Detects dangerous gas levels and triggers alarms.']
+          ],
+          wokwiUrl: 'https://wokwi.com/projects/459537607924272129',
+          code: `#include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT22
+#define SOIL_PIN A2
+#define LDR_PIN A0
+#define MQ2_PIN A1
+#define TRIG_PIN 4
+#define ECHO_PIN 5
+#define GREEN_LED 6
+#define YELLOW_LED 7
+#define RED_LED 8
+#define BUZZER 9
+
+DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+long readDistance() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  return duration * 0.034 / 2;
+}
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+}
+
+void loop() {
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+  int soil = analogRead(SOIL_PIN);
+  int lightValue = analogRead(LDR_PIN);
+  int gas = analogRead(MQ2_PIN);
+  long waterLevel = readDistance();
+
+  bool soilDry = soil < 400;
+  bool hot = temp > 30;
+  bool lowLight = lightValue < 400;
+  bool waterLow = waterLevel > 150;
+  bool gasAlert = gas > 700;
+
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(YELLOW_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+  digitalWrite(BUZZER, LOW);
+
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temp);
+  lcd.print(" H:");
+  lcd.print(hum);
+  lcd.setCursor(0, 1);
+
+  if (gasAlert) {
+    lcd.print("Gas Danger!   ");
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(BUZZER, HIGH);
+  } else if (soilDry || hot || lowLight || waterLow) {
+    lcd.print("Warning!      ");
+    digitalWrite(YELLOW_LED, HIGH);
+  } else {
+    lcd.print("All Good      ");
+    digitalWrite(GREEN_LED, HIGH);
+  }
+
+  Serial.print("Temp: ");
+  Serial.print(temp);
+  Serial.print(" Soil: ");
+  Serial.print(soil);
+  Serial.print(" Light: ");
+  Serial.print(lightValue);
+  Serial.print(" Water: ");
+  Serial.print(waterLevel);
+  Serial.print(" Gas: ");
+  Serial.println(gas);
+  delay(2000);
+}`
+        }
+      },
+      {
+        id: 'smart-city-env',
+        icon: '🌆',
+        title: 'Smart City Environmental Sensing and Energy Saving System',
+        difficulty: 'Advanced',
+        description: 'A smart streetlight and environmental monitoring system that automates public area lighting and safety based on real-time sensor data.',
+        tags: ['Smart City','Energy Saving','Automation','Environment'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: ['Detect day/night using light sensing','Detect people or vehicles using motion/object sensing','Monitor temperature and humidity','Warn about gas or smoke detection','Display live environmental data on LCD','Automatically control lights, buzzer, and ventilation'],
+          realLifeUse: ['Smart city street lighting','Public area automation','Energy-efficient urban systems','Environmental and air quality monitoring'],
+          components: ['Arduino Uno','Breadboard','DHT22 (Temp + Hum)','LDR (Light Sensor)','10k Resistor (Voltage Divider)','HC-SR04 Ultrasonic Sensor','PIR Motion Sensor','MQ-2 Gas Sensor','16x2 LCD with I2C','3 LEDs (Green, Yellow, Red)','3 Resistors (220Ω)','Buzzer','Servo Motor (Fan Simulation)'],
+          pins: [['DHT22 Data','D2'],['PIR Sensor','D3'],['Ultrasonic TRIG','D4'],['Ultrasonic ECHO','D5'],['MQ-2 Gas (AO)','A1'],['LDR (Analog)','A0'],['Green LED','D6'],['Yellow LED','D7'],['Red LED','D8'],['Buzzer','D9'],['Servo Motor','D10'],['LCD SDA','A4'],['LCD SCL','A5']],
+          howItWorks: [['Night Mode','Streetlights activate in dark environments based on LDR readings.'],['Smart Lighting','Lights brighten when objects or motion are detected nearby.'],['Safety Alerts','Triggers buzzer and red LED if gas/smoke is detected.'],['Ventilation','Starts fan (Servo) if temperature exceeds threshold.']],
+          wokwiUrl: 'https://wokwi.com/projects/459474189416268801',
+          code: `#include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Servo.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT22
+#define PIR_PIN 3
+#define TRIG_PIN 4
+#define ECHO_PIN 5
+#define GREEN_LED 6
+#define YELLOW_LED 7
+#define RED_LED 8
+#define BUZZER 9
+#define SERVO_PIN 10
+#define LDR_PIN A0
+#define MQ2_PIN A1
+
+DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+Servo myServo;
+
+long readDistance() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  return duration * 0.034 / 2;
+}
+
+void setup() {
+  pinMode(PIR_PIN, INPUT);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+  Serial.begin(9600);
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+  myServo.attach(SERVO_PIN);
+  myServo.write(0);
+}
+
+void loop() {
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+  int ldrValue = analogRead(LDR_PIN);
+  int gasValue = analogRead(MQ2_PIN);
+  int motion = digitalRead(PIR_PIN);
+  long distance = readDistance();
+
+  bool isDark = ldrValue < 500;
+  bool objectNear = distance > 0 && distance < 100;
+  bool gasAlert = gasValue > 400;
+  bool highTemp = temp > 30;
+
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(YELLOW_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+  digitalWrite(BUZZER, LOW);
+  myServo.write(0);
+
+  if (isDark) {
+    digitalWrite(GREEN_LED, HIGH);
+    if (objectNear || motion == HIGH) digitalWrite(YELLOW_LED, HIGH);
+  }
+  if (gasAlert) {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(BUZZER, HIGH);
+  }
+  if (highTemp) myServo.write(90);
+
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temp, 1);
+  lcd.print(" H:");
+  lcd.print(hum, 0);
+
+  lcd.setCursor(0, 1);
+  if (gasAlert) lcd.print("Gas Alert!      ");
+  else if (isDark && (objectNear || motion == HIGH)) lcd.print("Night Active    ");
+  else if (isDark) lcd.print("Night Standby   ");
+  else lcd.print("Day Mode        ");
+
+  delay(1000);
+}`
+        }
+      },
+      {
+        id: 'room-access',
+        icon: '🛡️',
+        title: 'Smart Room Access + Safety Control',
+        difficulty: 'Advanced',
+        description: 'A comprehensive security and safety system featuring PIN access, motion detection, and environmental monitoring.',
+        tags: ['Security','Access Control','Safety','Sensors'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: ['Ultrasonic sensor detects approaching persons','Keypad for secure PIN entry','Servo motor controls door lock','PIR sensor for motion detection inside','DHT22 for high temperature/fire alarm','Pushbutton doorbell with visual/audio feedback','Manual override switch for emergency access'],
+          realLifeUse: ['Smart office security','Home automation systems','Restricted area access control','Safety monitoring in server rooms'],
+          components: ['Arduino Uno','4x4 Keypad','Pushbutton','Slide Switch','Servo Motor','LCD 16x2 (I2C)','Buzzer','Red LED','Green LED','Blue LED','PIR Motion Sensor','Ultrasonic Sensor (HC-SR04)','DHT22 Temperature Sensor'],
+          pins: [['Red LED','D12'],['Green LED','D13'],['Blue LED','A0'],['Buzzer','D11'],['Servo','D10'],['Pushbutton (Doorbell)','D2'],['Slide Switch (Override)','D3'],['PIR Sensor','A1'],['Ultrasonic TRIG','A2'],['Ultrasonic ECHO','A3'],['DHT22 Data','A4'],['LCD SDA','A4'],['LCD SCL','A5'],['Keypad R1-R4','D4-D7'],['Keypad C1-C4','D8-D9, A5, A6']],
+          howItWorks: [['Proximity Detection',"Ultrasonic sensor triggers 'Enter PIN' prompt when someone is near."],['Access Control','Correct PIN opens door (Servo) and lights Green LED; wrong PIN triggers Red LED and Buzzer.'],['Safety Monitoring','PIR detects motion; DHT22 triggers alarm if temperature > 35°C.']],
+          wokwiUrl: 'https://wokwi.com/projects/459558249372827649',
+          code: `#include <Servo.h>
+#include <DHT.h>
+#include <LiquidCrystal_I2C.h>
+
+#define DHTPIN A4
+#define DHTTYPE DHT22
+
+Servo doorServo;
+DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+int redLED = 12;
+int greenLED = 13;
+int blueLED = A0;
+int buzzer = 11;
+int button = 2;
+int manualSwitch = 3;
+int pir = A1;
+int trig = A2;
+int echo = A3;
+
+void setup() {
+  pinMode(redLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+  pinMode(blueLED, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(button, INPUT_PULLUP);
+  pinMode(manualSwitch, INPUT_PULLUP);
+  pinMode(pir, INPUT);
+
+  doorServo.attach(10);
+  doorServo.write(0);
+  lcd.init();
+  lcd.backlight();
+  lcd.print("System Ready");
+  dht.begin();
+}
+
+void loop() {
+  if (digitalRead(manualSwitch) == LOW) {
+    lcd.clear();
+    lcd.print("Manual Mode");
+    digitalWrite(greenLED, HIGH);
+    doorServo.write(90);
+    delay(1000);
+    return;
+  }
+
+  if (digitalRead(button) == LOW) {
+    lcd.clear();
+    lcd.print("Visitor!");
+    digitalWrite(blueLED, HIGH);
+    tone(buzzer, 1000, 300);
+    delay(1000);
+    digitalWrite(blueLED, LOW);
+  }
+
+  if (digitalRead(pir) == HIGH) {
+    lcd.clear();
+    lcd.print("Motion Detected");
+    delay(1000);
+  }
+
+  float temp = dht.readTemperature();
+  if (temp > 35) {
+    lcd.clear();
+    lcd.print("High Temp!");
+    digitalWrite(redLED, HIGH);
+    tone(buzzer, 2000);
+    delay(1000);
+    noTone(buzzer);
+    digitalWrite(redLED, LOW);
+  }
+  delay(500);
+}`
+        }
+      },
+      {
+        id: 'vending-machine',
+        icon: '🛒',
+        title: 'Smart Vending Machine System',
+        difficulty: 'Advanced',
+        description: 'A user interaction project using keypad, LCD, and servo to simulate a real-world vending machine.',
+        tags: ['User Interaction','Keypad','Servo','Automation'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: ['User chooses an item using a 4x4 keypad','User confirms selection with a button','System displays messages on a 16x2 LCD','Servo motor rotates to simulate item dispensing','LED indicators and buzzer provide status feedback'],
+          realLifeUse: ['Vending machines','Ticket machines','ATM-style selection systems','Self-service kiosks'],
+          components: ['Arduino Uno','Keypad 4x4','Pushbutton (Confirm)','Pushbutton (Cancel)','Servo Motor','LCD 16x2 I2C','Buzzer','LEDs (Green, Yellow, Red)','Resistors (220Ω)','Breadboard'],
+          pins: [['Green LED','D2'],['Yellow LED','D3'],['Red LED','D4'],['Confirm Button','D5'],['Cancel Button','D6'],['Buzzer','D8'],['Servo','D9'],['Keypad R1-R4','D10-D13'],['Keypad C1-C4','A0-A3'],['LCD SDA/SCL','A4/A5']],
+          howItWorks: [['Item Selection','User presses 1 (Water), 2 (Juice), or 3 (Snack) on the keypad.'],['Confirmation','Pressing the confirm button triggers the servo and buzzer.'],['Cancellation','Pressing the cancel button resets the selection.']],
+          wokwiUrl: 'https://wokwi.com/projects/459578718958070785',
+          code: `#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Servo.h>
+#include <Keypad.h>
+
+#define GREEN_LED 2
+#define YELLOW_LED 3
+#define RED_LED 4
+#define CONFIRM_BUTTON 5
+#define CANCEL_BUTTON 6
+#define BUZZER 8
+#define SERVO_PIN 9
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+Servo dispenserServo;
+const byte ROWS = 4;
+const byte COLS = 4;
+
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+
+byte rowPins[ROWS] = {10, 11, 12, 13};
+byte colPins[COLS] = {A0, A1, A2, A3};
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+String selectedItem = "";
+
+void resetOutputs() {
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(YELLOW_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+  digitalWrite(BUZZER, LOW);
+}
+
+void setup() {
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(CONFIRM_BUTTON, INPUT_PULLUP);
+  pinMode(CANCEL_BUTTON, INPUT_PULLUP);
+  pinMode(BUZZER, OUTPUT);
+
+  lcd.init();
+  lcd.backlight();
+  dispenserServo.attach(SERVO_PIN);
+  dispenserServo.write(0);
+  lcd.setCursor(0, 0);
+  lcd.print("Vending System");
+  lcd.setCursor(0, 1);
+  lcd.print("Select 1/2/3");
+}
+
+void loop() {
+  char key = keypad.getKey();
+
+  if (key == '1') selectedItem = "Water";
+  else if (key == '2') selectedItem = "Juice";
+  else if (key == '3') selectedItem = "Snack";
+
+  if (digitalRead(CANCEL_BUTTON) == LOW) {
+    selectedItem = "";
+    resetOutputs();
+  }
+
+  if (digitalRead(CONFIRM_BUTTON) == LOW && selectedItem != "") {
+    resetOutputs();
+    digitalWrite(GREEN_LED, HIGH);
+    lcd.clear();
+    lcd.print("Dispensing...");
+    lcd.setCursor(0, 1);
+    lcd.print(selectedItem);
+    dispenserServo.write(90);
+    delay(1000);
+    dispenserServo.write(0);
+    selectedItem = "";
+  }
+}`
+        }
+      },
+      {
+        id: 'smart-lighting',
+        icon: '🌡️',
+        title: 'Smart Room Lighting with Fan Speed Control',
+        difficulty: 'Intermediate',
+        description: 'A variable control system where light brightness and fan speed change gradually based on sensor inputs.',
+        tags: ['Variable Control','PWM','Sensors','Automation'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: ['Light brightness changes gradually via potentiometer','Fan speed changes gradually based on temperature (DHT22)','LCD displays real-time brightness and temperature','Buzzer sounds a warning if temperature exceeds 35°C'],
+          realLifeUse: ['Smart homes','Automatic room lighting','Temperature-based fan control','Energy saving systems'],
+          components: ['Arduino Uno','Potentiometer','LED','Resistor (220Ω)','Servo Motor (fan simulation)','DHT22 (temperature sensor)','LCD 16x2 I2C','Buzzer','Breadboard'],
+          pins: [['Potentiometer Middle','A0'],['LED (PWM)','D3'],['Servo (PWM)','D9'],['DHT22 Data','D2'],['Buzzer','D8'],['LCD SDA','A4'],['LCD SCL','A5']],
+          howItWorks: [['Variable Lighting','Potentiometer input maps to LED brightness (0-255 PWM).'],['Variable Fan Control','Temperature (20-40°C) maps to Servo angle (0-180°) for fan speed simulation.']],
+          wokwiUrl: 'https://wokwi.com/projects/459549517813764097',
+          code: `#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Servo.h>
+#include <DHT.h>
+
+#define POT_PIN A0
+#define LED_PIN 3
+#define SERVO_PIN 9
+#define BUZZER 8
+#define DHTPIN 2
+#define DHTTYPE DHT22
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+Servo fanServo;
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+  fanServo.attach(SERVO_PIN);
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  int potValue = analogRead(POT_PIN);
+  int brightness = map(potValue, 0, 1023, 0, 255);
+  analogWrite(LED_PIN, brightness);
+
+  float temp = dht.readTemperature();
+  int fanSpeed = map(temp, 20, 40, 0, 180);
+  fanSpeed = constrain(fanSpeed, 0, 180);
+  fanServo.write(fanSpeed);
+
+  if (temp > 35) digitalWrite(BUZZER, HIGH);
+  else digitalWrite(BUZZER, LOW);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Bright:");
+  lcd.print(brightness);
+  lcd.setCursor(0, 1);
+  lcd.print("Temp:");
+  lcd.print(temp);
+  lcd.print("C ");
+  delay(500);
+}`
+        }
+      },
+      {
+        id: 'traffic-light',
+        icon: '🚦',
+        title: 'Smart Traffic Light System',
+        difficulty: 'Beginner',
+        description: 'A complete pedestrian warning system with LEDs, buzzer, and LCD display. Perfect for learning output control.',
+        tags: ['Basic Output','LCD','Buzzer','Sensors'],
+        fullDetails: {
+          image: 'https://raw.githubusercontent.com/wokwi/wokwi-features/master/images/wokwi-arduino-uno.png',
+          whatItDoes: ['Red LED, Yellow LED, Green LED control','Pedestrian LED control','Buzzer for crossing warnings','LCD for status display','Push button for crossing request'],
+          realLifeUse: ['Road intersections','Pedestrian crossings','School zones','Hospital crossings','Smart city traffic control'],
+          components: ['Arduino Uno','LED × 4 (1 red, 1 yellow, 1 green, 1 pedestrian)','Pushbutton','Buzzer','LCD 16x2 I2C','Resistor × 4 for LEDs (220Ω)','Resistor × 1 for button (10kΩ) if needed','Breadboard'],
+          pins: [['Green LED','D2'],['Yellow LED','D3'],['Red LED','D4'],['Pedestrian LED','D5'],['Button','D6'],['Buzzer','D7'],['LCD SDA','A4'],['LCD SCL','A5']],
+          howItWorks: [['Normal Mode','Green ON for vehicles, Yellow ON for short time, Red ON for stop. Repeat.'],['Pedestrian Request',"When button is pressed: traffic light changes to red, pedestrian LED turns ON, buzzer beeps, and LCD shows 'Pedestrian Cross'. After a few seconds, system goes back to normal traffic cycle."]],
+          wokwiUrl: 'https://wokwi.com/projects/459546428866456577',
+          code: `#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+#define GREEN_LED 2
+#define YELLOW_LED 3
+#define RED_LED 4
+#define PED_LED 5
+#define BUTTON_PIN 6
+#define BUZZER 7
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+bool pedestrianRequest = false;
+
+void setLights(bool greenState, bool yellowState, bool redState, bool pedState) {
+  digitalWrite(GREEN_LED, greenState);
+  digitalWrite(YELLOW_LED, yellowState);
+  digitalWrite(RED_LED, redState);
+  digitalWrite(PED_LED, pedState);
+}
+
+void setup() {
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(PED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  if (digitalRead(BUTTON_PIN) == LOW) pedestrianRequest = true;
+
+  setLights(HIGH, LOW, LOW, LOW);
+  lcd.setCursor(0, 0);
+  lcd.print("Cars: GO");
+  lcd.setCursor(0, 1);
+  lcd.print("Ped: WAIT");
+  delay(5000);
+
+  setLights(LOW, HIGH, LOW, LOW);
+  delay(2000);
+
+  setLights(LOW, LOW, HIGH, LOW);
+  delay(2000);
+
+  if (pedestrianRequest) {
+    setLights(LOW, LOW, HIGH, HIGH);
+    lcd.clear();
+    lcd.print("Ped: CROSS");
+    for (int i = 0; i < 5; i++) {
+      digitalWrite(BUZZER, HIGH);
+      delay(300);
+      digitalWrite(BUZZER, LOW);
+      delay(300);
+    }
+    pedestrianRequest = false;
+  }
+}`
+        }
+      },
+      { id:'blink', icon:'💡', title:'Blink an LED', difficulty:'Beginner', description:'The "Hello World" of electronics. Learn how to control a digital output pin.', tags:['Digital Output','Delay','LED'] },
+      { id:'potentiometer', icon:'🎚️', title:'Analog Input Reading', difficulty:'Beginner', description:'Read values from a potentiometer and map them to control other components.', tags:['Analog Input','ADC','Serial Monitor'] },
+      { id:'servo', icon:'🔧', title:'Servo Motor Control', difficulty:'Intermediate', description:'Precise position control using PWM signals and the Servo library.', tags:['PWM','Servo Library','Motors'] },
+      { id:'ultrasonic', icon:'📏', title:'Distance Measurement', difficulty:'Intermediate', description:'Use an HC-SR04 sensor to measure distance using ultrasonic waves.', tags:['Sensors','PulseIn','Timing'] },
+      { id:'lcd', icon:'🖥️', title:'LCD Interface', difficulty:'Intermediate', description:'Display text and data on a 16x2 character LCD screen.', tags:['I2C','LiquidCrystal','Display'] }
+    ];
+
+    const filters = ['All','Beginner','Intermediate','Advanced'];
+    const state = { filter: 'All', query: '', selectedId: null };
+    let suppressHashHandler = false;
+
+    const filtersEl = document.getElementById('filters');
+    const taskGridEl = document.getElementById('taskGrid');
+    const emptyStateEl = document.getElementById('emptyState');
+    const detailViewEl = document.getElementById('detailView');
+    const catalogViewEl = document.getElementById('catalogView');
+    const searchInputEl = document.getElementById('searchInput');
+
+    function escapeHtml(str='') {
+      return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    function svgDataUri(svg) {
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function getTaskTheme(task) {
+      const themes = {
+        'smart-agriculture': { bg1:'#0f5132', bg2:'#b7e4c7', accent:'#f4d35e', symbol1:'🌱', symbol2:'💧', motif:'SENSORS • SOIL • AIR • WATER' },
+        'smart-city-env': { bg1:'#102a43', bg2:'#60a5fa', accent:'#fbbf24', symbol1:'🌆', symbol2:'💡', motif:'CITY GRID • ENERGY • SAFETY' },
+        'room-access': { bg1:'#1f2937', bg2:'#9ca3af', accent:'#34d399', symbol1:'🛡️', symbol2:'🔐', motif:'PIN ACCESS • SECURITY • ALERTS' },
+        'vending-machine': { bg1:'#7c2d12', bg2:'#fdba74', accent:'#fef3c7', symbol1:'🥤', symbol2:'🪙', motif:'SELECTION • DISPENSE • PAY' },
+        'smart-lighting': { bg1:'#312e81', bg2:'#a78bfa', accent:'#fde68a', symbol1:'🏠', symbol2:'💡', motif:'ROOM AMBIENCE • AUTO LIGHT' },
+        'traffic-light': { bg1:'#111827', bg2:'#6b7280', accent:'#ef4444', symbol1:'🚦', symbol2:'🚶', motif:'INTERSECTION • TIMING • SAFETY' },
+        'blink': { bg1:'#3f3f46', bg2:'#a1a1aa', accent:'#fde047', symbol1:'💡', symbol2:'⚡', motif:'DIGITAL OUTPUT • BASICS' },
+        'potentiometer': { bg1:'#14532d', bg2:'#86efac', accent:'#facc15', symbol1:'🎚️', symbol2:'📈', motif:'ANALOG INPUT • READINGS' },
+        'servo': { bg1:'#0f766e', bg2:'#5eead4', accent:'#fef08a', symbol1:'🔧', symbol2:'⚙️', motif:'PWM • POSITION CONTROL' },
+        'ultrasonic': { bg1:'#1d4ed8', bg2:'#93c5fd', accent:'#e0f2fe', symbol1:'📏', symbol2:'📡', motif:'DISTANCE • ECHO • RANGE' },
+        'lcd': { bg1:'#0f172a', bg2:'#38bdf8', accent:'#a7f3d0', symbol1:'🖥️', symbol2:'🔤', motif:'DISPLAY • TEXT • I2C' }
+      };
+      return themes[task.id] || { bg1:'#1f2937', bg2:'#cbd5e1', accent:'#f8fafc', symbol1:task.icon || '⚙️', symbol2:'✨', motif:(task.tags || []).join(' • ') || 'ARDUINO TASK' };
+    }
+
+
+    function normalizePin(pin='') {
+      return String(pin).replace(/\s+/g, '').toUpperCase();
+    }
+
+    function componentKind(name='') {
+      const n = String(name).toLowerCase();
+      if (n.includes('lcd')) return 'lcd';
+      if (n.includes('servo')) return 'servo';
+      if (n.includes('ultrasonic') || n.includes('echo') || n.includes('trig')) return 'ultrasonic';
+      if (n.includes('dht')) return 'sensor';
+      if (n.includes('mq-2') || n.includes('gas')) return 'sensor';
+      if (n.includes('soil')) return 'sensor';
+      if (n.includes('ldr') || n.includes('photo')) return 'sensor';
+      if (n.includes('pir')) return 'sensor';
+      if (n.includes('button') || n.includes('switch') || n.includes('keypad')) return 'input';
+      if (n.includes('buzzer')) return 'buzzer';
+      if (n.includes('led')) return 'led';
+      return 'module';
+    }
+
+    function colorForPin(pin='') {
+      const p = normalizePin(pin);
+      if (p.startsWith('A')) return '#2563eb';
+      if (p.startsWith('D')) return '#f59e0b';
+      if (p.includes('SDA') || p.includes('SCL')) return '#7c3aed';
+      if (p.includes('5V') || p.includes('VCC') || p.includes('VIN')) return '#dc2626';
+      if (p.includes('GND')) return '#111827';
+      return '#0f766e';
+    }
+
+    function breadboardTaskData(task) {
+      const details = task.fullDetails || {};
+      const seen = new Map();
+
+      (details.pins || []).forEach(([component, pin]) => {
+        const key = component;
+        if (!seen.has(key)) {
+          seen.set(key, { label: component, pins: [pin], kind: componentKind(component) });
+        } else {
+          seen.get(key).pins.push(pin);
+        }
+      });
+
+      const items = Array.from(seen.values()).map((item, index) => ({
+        ...item,
+        shortLabel: item.label.replace(/\s*\([^)]*\)/g, '').replace(/\bSensor\b/gi, '').trim(),
+        wireColor: colorForPin(item.pins[0] || ''),
+        x: 700 + ((index % 2) * 210),
+        y: 120 + (Math.floor(index / 2) * 72)
+      }));
+
+      return items.slice(0, 10);
+    }
+
+    function drawComponent(item) {
+      const title = escapeHtml(item.shortLabel || item.label);
+      const pinText = escapeHtml((item.pins || []).join(' / '));
+      const base = `
+        <rect x="${item.x}" y="${item.y}" width="170" height="52" rx="14" fill="#ffffff" stroke="#cfc7bc" stroke-width="2"/>
+        <text x="${item.x + 16}" y="${item.y + 22}" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="800" fill="#171717">${title}</text>
+        <text x="${item.x + 16}" y="${item.y + 40}" font-family="Inter,Arial,sans-serif" font-size="11" fill="#5b5b5b">${pinText}</text>
+      `;
+
+      if (item.kind === 'led') {
+        return base + `
+          <circle cx="${item.x + 145}" cy="${item.y + 26}" r="11" fill="${item.wireColor}" opacity="0.9"/>
+          <rect x="${item.x + 138}" y="${item.y + 39}" width="2" height="10" fill="#666"/>
+          <rect x="${item.x + 149}" y="${item.y + 39}" width="2" height="10" fill="#666"/>
+        `;
+      }
+      if (item.kind === 'buzzer') {
+        return base + `
+          <circle cx="${item.x + 143}" cy="${item.y + 26}" r="14" fill="#111827"/>
+          <circle cx="${item.x + 143}" cy="${item.y + 26}" r="5" fill="#9ca3af"/>
+        `;
+      }
+      if (item.kind === 'servo') {
+        return base + `
+          <rect x="${item.x + 126}" y="${item.y + 12}" width="32" height="26" rx="6" fill="#475569"/>
+          <circle cx="${item.x + 142}" cy="${item.y + 25}" r="6" fill="#cbd5e1"/>
+          <line x1="${item.x + 142}" y1="${item.y + 25}" x2="${item.x + 160}" y2="${item.y + 10}" stroke="#cbd5e1" stroke-width="3"/>
+        `;
+      }
+      if (item.kind === 'lcd') {
+        return base + `
+          <rect x="${item.x + 110}" y="${item.y + 10}" width="48" height="30" rx="4" fill="#1f2937"/>
+          <rect x="${item.x + 116}" y="${item.y + 16}" width="36" height="18" rx="2" fill="#86efac"/>
+        `;
+      }
+      if (item.kind === 'ultrasonic') {
+        return base + `
+          <circle cx="${item.x + 132}" cy="${item.y + 26}" r="11" fill="#dbeafe" stroke="#2563eb"/>
+          <circle cx="${item.x + 156}" cy="${item.y + 26}" r="11" fill="#dbeafe" stroke="#2563eb"/>
+        `;
+      }
+      if (item.kind === 'sensor') {
+        return base + `
+          <rect x="${item.x + 126}" y="${item.y + 12}" width="30" height="28" rx="6" fill="#dcfce7" stroke="#16a34a"/>
+          <circle cx="${item.x + 141}" cy="${item.y + 26}" r="5" fill="#16a34a"/>
+        `;
+      }
+      if (item.kind === 'input') {
+        return base + `
+          <rect x="${item.x + 128}" y="${item.y + 14}" width="28" height="24" rx="8" fill="#fef3c7" stroke="#d97706"/>
+        `;
+      }
+      return base + `
+        <rect x="${item.x + 128}" y="${item.y + 12}" width="28" height="28" rx="6" fill="#e2e8f0" stroke="#64748b"/>
+      `;
+    }
+
+    function drawWire(item, index) {
+      const startX = 595;
+      const startY = 130 + (index * 26);
+      const endX = item.x;
+      const endY = item.y + 26;
+      const midX = Math.round((startX + endX) / 2);
+
+      return `
+        <circle cx="${startX}" cy="${startY}" r="4.2" fill="${item.wireColor}"/>
+        <path d="M ${startX} ${startY} C ${midX - 30} ${startY}, ${midX - 10} ${endY}, ${endX} ${endY}"
+          fill="none" stroke="${item.wireColor}" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="${endX}" cy="${endY}" r="4.2" fill="${item.wireColor}"/>
+      `;
+    }
+
+    function makeTaskImage(task) {
+      const items = breadboardTaskData(task);
+      const title = escapeHtml(task.title.toUpperCase());
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="${escapeHtml(task.title)} breadboard circuit diagram">
+          <rect width="1200" height="720" fill="#ede7de"/>
+          <rect x="34" y="34" width="1132" height="652" rx="32" fill="#f6f2eb" stroke="#d8d1c7"/>
+
+          <text x="68" y="86" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" letter-spacing="2" fill="#6d6d6d">BREADBOARD CIRCUIT DIAGRAM</text>
+          <text x="68" y="120" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="900" fill="#171717">${title}</text>
+
+          <rect x="66" y="168" width="520" height="414" rx="26" fill="#1f6feb" stroke="#163f86" stroke-width="4"/>
+          <rect x="90" y="192" width="80" height="40" rx="8" fill="#0f172a" opacity="0.92"/>
+          <text x="99" y="218" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="800" fill="#fff">UNO</text>
+          <rect x="200" y="208" width="210" height="110" rx="10" fill="#0f172a" opacity="0.22"/>
+          <rect x="214" y="224" width="180" height="78" rx="8" fill="#0f172a" opacity="0.45"/>
+          <text x="229" y="270" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="800" fill="#dbeafe">ATmega328P</text>
+          <rect x="104" y="506" width="120" height="30" rx="6" fill="#111827" opacity="0.78"/>
+          <text x="118" y="527" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="700" fill="#fff">USB / POWER</text>
+
+          <g>
+            ${Array.from({length:14}).map((_, i) => `
+              <circle cx="${94 + i*34}" cy="178" r="7" fill="#0b1220" stroke="#8fb6ff" stroke-width="2"/>
+              <text x="${88 + i*34}" y="160" font-family="Inter,Arial,sans-serif" font-size="10" fill="#e5eefc">D${i}</text>
+            `).join('')}
+            ${Array.from({length:6}).map((_, i) => `
+              <circle cx="${448 + i*22}" cy="548" r="7" fill="#0b1220" stroke="#8fb6ff" stroke-width="2"/>
+              <text x="${441 + i*22}" y="572" font-family="Inter,Arial,sans-serif" font-size="10" fill="#e5eefc">A${i}</text>
+            `).join('')}
+          </g>
+
+          <g>
+            <rect x="632" y="168" width="482" height="414" rx="24" fill="#fffdf8" stroke="#d9d0c3"/>
+            <rect x="654" y="192" width="438" height="26" rx="10" fill="#ef4444" opacity="0.92"/>
+            <rect x="654" y="532" width="438" height="26" rx="10" fill="#111827" opacity="0.88"/>
+            <text x="668" y="210" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff">+ POWER RAIL</text>
+            <text x="668" y="550" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff">− GROUND RAIL</text>
+            ${Array.from({length:18}).map((_, row) => `
+              <g>
+                ${Array.from({length:28}).map((_, col) => `
+                  <circle cx="${670 + col*14}" cy="${238 + row*15}" r="2.1" fill="#c7beb1"/>
+                `).join('')}
+              </g>
+            `).join('')}
+            <rect x="864" y="226" width="18" height="284" fill="#f1e9dd"/>
+          </g>
+
+          ${items.map(drawComponent).join('')}
+          ${items.map(drawWire).join('')}
+
+          <g>
+            <rect x="66" y="606" width="1048" height="48" rx="16" fill="#fff" stroke="#ddd3c6"/>
+            <circle cx="92" cy="630" r="7" fill="#f59e0b"/><text x="106" y="635" font-family="Inter,Arial,sans-serif" font-size="13" fill="#444">Digital wire</text>
+            <circle cx="236" cy="630" r="7" fill="#2563eb"/><text x="250" y="635" font-family="Inter,Arial,sans-serif" font-size="13" fill="#444">Analog wire</text>
+            <circle cx="374" cy="630" r="7" fill="#dc2626"/><text x="388" y="635" font-family="Inter,Arial,sans-serif" font-size="13" fill="#444">Power rail</text>
+            <circle cx="510" cy="630" r="7" fill="#111827"/><text x="524" y="635" font-family="Inter,Arial,sans-serif" font-size="13" fill="#444">Ground rail</text>
+            <text x="680" y="635" font-family="Inter,Arial,sans-serif" font-size="13" fill="#666">Generated from each task's component and pin map</text>
+          </g>
+        </svg>`;
+      return svgDataUri(svg);
+    }
+
+    function getTaskImage(task) {
+      if (!task._generatedImage) task._generatedImage = makeTaskImage(task);
+      return task._generatedImage;
+    }
+
+    function renderFilters() {
+      filtersEl.innerHTML = filters.map(f => `
+        <button class="chip ${state.filter === f ? 'active' : ''}" data-filter="${f}">${f}</button>
+      `).join('');
+      filtersEl.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.filter = btn.dataset.filter;
+          renderFilters();
+          renderGrid();
+        });
+      });
+    }
+
+    function searchableText(task){
+      const extra = task.fullDetails ? [
+        ...(task.fullDetails.whatItDoes || []),
+        ...(task.fullDetails.realLifeUse || []),
+        ...(task.fullDetails.components || []),
+        ...((task.fullDetails.pins || []).flat()),
+        ...((task.fullDetails.howItWorks || []).flat())
+      ] : [];
+      return [task.title, task.description, ...(task.tags || []), ...extra].join(' ').toLowerCase();
+    }
+
+    function getVisibleTasks() {
+      return tasks.filter(task => {
+        const matchesFilter = state.filter === 'All' || task.difficulty === state.filter;
+        const q = state.query.trim().toLowerCase();
+        const matchesQuery = !q || searchableText(task).includes(q);
+        return matchesFilter && matchesQuery;
+      });
+    }
+
+    function renderGrid() {
+      const visible = getVisibleTasks();
+      taskGridEl.innerHTML = visible.map(task => `
+        <article class="card" data-open="${task.id}">
+          <div class="card-top">
+            <div class="icon">${task.icon}</div>
+            <div class="difficulty">${task.difficulty}</div>
+          </div>
+          <div class="card-art">
+            <img src="${escapeHtml(getTaskImage(task))}" alt="${escapeHtml(task.title)} breadboard circuit diagram" loading="lazy">
+          </div>
+          <h3>${escapeHtml(task.title)}</h3>
+          <p>${escapeHtml(task.description)}</p>
+          <div class="tags">
+            ${task.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+
+      emptyStateEl.classList.toggle('hidden', visible.length !== 0);
+
+      taskGridEl.querySelectorAll('[data-open]').forEach(card => {
+        card.addEventListener('click', () => openTask(card.dataset.open));
+      });
+    }
+
+    function renderDetail(task) {
+      const d = task.fullDetails;
+      const imageHtml = `<img src="${escapeHtml(getTaskImage(task))}" alt="${escapeHtml(task.title)} breadboard circuit diagram">`;
+
+      const detailHtml = `
+        <div class="detail-nav">
+          <button class="btn" id="backBtn">← Back to tasks</button>
+          <div class="subtle">Task details</div>
+        </div>
+
+        <div class="panel" style="margin-bottom:18px">
+          <div class="kicker">Arduino Uno project</div>
+          <h2 class="task-title">${escapeHtml(task.title)}</h2>
+          <div class="meta-row">
+            <span class="pill">${escapeHtml(task.difficulty)}</span>
+            ${task.tags.map(tag => `<span class="pill">#${escapeHtml(tag)}</span>`).join('')}
+          </div>
+          <p class="lead" style="margin-bottom:0;max-width:none">${escapeHtml(task.description)}</p>
+        </div>
+
+        <div class="detail-grid">
+          <div>
+            <div class="panel" style="margin-bottom:18px">
+              <div class="hero-image">
+                ${imageHtml}
+              </div>
+              <div class="muted" style="margin-top:10px">Breadboard-style circuit diagram generated from this task's component list and pin mapping.</div>
+              <div class="actions">
+                ${d?.wokwiUrl ? `<a class="btn primary" href="${escapeHtml(d.wokwiUrl)}" target="_blank" rel="noopener noreferrer">Open in Wokwi</a>` : ''}
+                ${d?.code ? `<button class="btn" id="copyCodeBtn">Copy code</button>` : ''}
+              </div>
+            </div>
+
+            ${d ? `
+              <div class="cols-2" style="margin-bottom:18px">
+                <div class="panel">
+                  <div class="kicker">What it does</div>
+                  <ul class="list">${(d.whatItDoes || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+                </div>
+                <div class="panel">
+                  <div class="kicker">Real-life use</div>
+                  <ul class="list">${(d.realLifeUse || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+                </div>
+              </div>
+
+              <div class="panel" style="margin-bottom:18px">
+                <div class="kicker">Arduino code</div>
+                <pre><code>${escapeHtml(d.code || '// No code available')}</code></pre>
+              </div>
+            ` : `
+              <div class="panel">
+                <div class="kicker">Overview</div>
+                <p class="subtle">This lightweight task from the original project did not include a full detail page or code block.</p>
+              </div>
+            `}
+          </div>
+
+          <div>
+            ${d ? `
+              <div class="panel" style="margin-bottom:18px">
+                <div class="kicker">Components</div>
+                <ul class="list">${(d.components || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+              </div>
+
+              <div class="panel" style="margin-bottom:18px">
+                <div class="kicker">Pin mapping</div>
+                <table class="table">
+                  <thead><tr><th>Component</th><th>Pin</th></tr></thead>
+                  <tbody>
+                    ${(d.pins || []).map(([component, pin]) => `<tr><td>${escapeHtml(component)}</td><td><strong>${escapeHtml(pin)}</strong></td></tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="panel">
+                <div class="kicker">How it works</div>
+                <table class="table">
+                  <thead><tr><th>Mode</th><th>Description</th></tr></thead>
+                  <tbody>
+                    ${(d.howItWorks || []).map(([mode, desc]) => `<tr><td><strong>${escapeHtml(mode)}</strong></td><td>${escapeHtml(desc)}</td></tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="panel">
+                <div class="kicker">Tags</div>
+                <div class="tags">${task.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div>
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+
+      detailViewEl.innerHTML = detailHtml;
+      detailViewEl.classList.add('active');
+      catalogViewEl.style.display = 'none';
+
+      document.getElementById('backBtn').addEventListener('click', closeDetail);
+      const copyBtn = document.getElementById('copyCodeBtn');
+      if (copyBtn && d?.code) {
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(d.code);
+            copyBtn.textContent = 'Copied';
+            setTimeout(() => copyBtn.textContent = 'Copy code', 1500);
+          } catch {
+            copyBtn.textContent = 'Copy failed';
+            setTimeout(() => copyBtn.textContent = 'Copy code', 1500);
+          }
+        });
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openTask(id, options = {}) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+      state.selectedId = id;
+      renderDetail(task);
+      if (!options.skipHashUpdate) {
+        suppressHashHandler = true;
+        window.location.hash = `task-${id}`;
+        setTimeout(() => { suppressHashHandler = false; }, 0);
+      }
+    }
+
+    function closeDetail(options = {}) {
+      state.selectedId = null;
+      detailViewEl.classList.remove('active');
+      detailViewEl.innerHTML = '';
+      catalogViewEl.style.display = '';
+      if (!options.skipHashUpdate) {
+        if (window.location.hash.startsWith('#task-')) {
+          suppressHashHandler = true;
+          history.replaceState(null, '', `${window.location.pathname}${window.location.search}#tasks`);
+          setTimeout(() => { suppressHashHandler = false; }, 0);
+        }
+      }
+      window.scrollTo({ top: document.getElementById('tasks').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    searchInputEl.addEventListener('input', e => {
+      state.query = e.target.value || '';
+      renderGrid();
+    });
+
+    document.getElementById('openFirstFeatured').addEventListener('click', () => openTask('smart-agriculture'));
+
+    window.addEventListener('hashchange', () => {
+      if (suppressHashHandler) return;
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#task-')) {
+        const id = decodeURIComponent(hash.slice(6));
+        if (id && id !== state.selectedId) openTask(id, { skipHashUpdate: true });
+      } else if (state.selectedId) {
+        closeDetail({ skipHashUpdate: true });
+      }
+    });
+
+    renderFilters();
+    renderGrid();
+
+    if (window.location.hash.startsWith('#task-')) {
+      const id = decodeURIComponent(window.location.hash.slice(6));
+      openTask(id, { skipHashUpdate: true });
+    }
+  </script>
+</body>
+</html>
